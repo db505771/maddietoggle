@@ -2,29 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sheet Toggle Switch</title>
+<title>Small Toggle</title>
 <style>
   body {
     background: #111111;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    height: 100vh;
-    font-family: Arial, sans-serif;
-  }
-
-  .switch-container {
-    display: flex;
-    flex-direction: column;
     align-items: center;
+    height: 100vh;
   }
 
   .switch {
     position: relative;
-    width: 80px;
-    height: 40px;
     display: inline-block;
+    width: 50px;   /* small width */
+    height: 25px;  /* small height */
   }
 
   .switch input { display: none; }
@@ -33,40 +25,39 @@
     position: absolute;
     cursor: pointer;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #E0E0E0; /* off bar */
-    border-radius: 40px;
-    transition: 0.4s;
+    background-color: #E0E0E0; /* OFF bar */
+    border-radius: 25px;
+    transition: 0.3s;
   }
 
   .slider:before {
     position: absolute;
     content: "";
-    height: 32px;
-    width: 32px;
-    left: 4px;
-    bottom: 4px;
-    background-color: #9E9E9E; /* off circle */
+    height: 19px;  /* small circle */
+    width: 19px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #9E9E9E; /* OFF circle */
     border-radius: 50%;
-    transition: 0.4s;
+    transition: 0.3s;
   }
 
+  /* When checked → ON colors */
   input:checked + .slider {
-    background-color: #A323CF; /* on bar */
+    background-color: #A323CF; /* ON bar */
   }
 
   input:checked + .slider:before {
-    transform: translateX(40px);
-    background-color: #BB1BF3; /* on circle */
+    transform: translateX(25px);
+    background-color: #BB1BF3; /* ON circle */
   }
 </style>
 </head>
 <body>
-<div class="switch-container">
-  <label class="switch">
-    <input type="checkbox" id="toggle">
-    <span class="slider"></span>
-  </label>
-</div>
+<label class="switch">
+  <input type="checkbox" id="toggle">
+  <span class="slider"></span>
+</label>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbxtl0QPVWNx5VB1On0GzmYnc5X-Je9aVhfs3T-ShGHseMj8GSllLKF49Vw7AfNXCRNL/exec";
@@ -76,15 +67,16 @@ const toggleEl = document.getElementById("toggle");
 async function load() {
   const res = await fetch(`${API}?action=get`);
   const data = await res.json();
-  toggleEl.checked = data.value;
+  // Reverse logic: FALSE → checked (ON), TRUE → unchecked (OFF)
+  toggleEl.checked = !data.value;
 }
 
 // Toggle function
 async function toggle() {
-  toggleEl.disabled = true; // prevent double click
+  toggleEl.disabled = true;
   const res = await fetch(`${API}?action=toggle`);
   const data = await res.json();
-  toggleEl.checked = data.value;
+  toggleEl.checked = !data.value; // maintain reversed logic
   toggleEl.disabled = false;
 }
 
