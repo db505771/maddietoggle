@@ -1,1 +1,98 @@
-# maddietoggle
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sheet Toggle Switch</title>
+<style>
+  body {
+    background: #111111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+
+  .switch-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .switch {
+    position: relative;
+    width: 80px;
+    height: 40px;
+    display: inline-block;
+  }
+
+  .switch input { display: none; }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #E0E0E0; /* off bar */
+    border-radius: 40px;
+    transition: 0.4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 32px;
+    width: 32px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #9E9E9E; /* off circle */
+    border-radius: 50%;
+    transition: 0.4s;
+  }
+
+  input:checked + .slider {
+    background-color: #A323CF; /* on bar */
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(40px);
+    background-color: #BB1BF3; /* on circle */
+  }
+</style>
+</head>
+<body>
+<div class="switch-container">
+  <label class="switch">
+    <input type="checkbox" id="toggle">
+    <span class="slider"></span>
+  </label>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbxtl0QPVWNx5VB1On0GzmYnc5X-Je9aVhfs3T-ShGHseMj8GSllLKF49Vw7AfNXCRNL/exec";
+const toggleEl = document.getElementById("toggle");
+
+// Load initial state from sheet
+async function load() {
+  const res = await fetch(`${API}?action=get`);
+  const data = await res.json();
+  toggleEl.checked = data.value;
+}
+
+// Toggle function
+async function toggle() {
+  toggleEl.disabled = true; // prevent double click
+  const res = await fetch(`${API}?action=toggle`);
+  const data = await res.json();
+  toggleEl.checked = data.value;
+  toggleEl.disabled = false;
+}
+
+// Event listener
+toggleEl.addEventListener("change", toggle);
+
+// Initialize
+load();
+</script>
+</body>
+</html>
