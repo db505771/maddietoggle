@@ -2,14 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Small Toggle</title>
 <style>
+  html,
   body {
-    background: #111111;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+    background: transparent; /* Made background transparent */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    overflow: hidden;
   }
 
   .switch {
@@ -65,19 +70,28 @@ const toggleEl = document.getElementById("toggle");
 
 // Load initial state from sheet
 async function load() {
-  const res = await fetch(`${API}?action=get`);
-  const data = await res.json();
-  // Reverse logic: FALSE → checked (ON), TRUE → unchecked (OFF)
-  toggleEl.checked = !data.value;
+  try {
+    const res = await fetch(`${API}?action=get`);
+    const data = await res.json();
+    // Reverse logic: FALSE → checked (ON), TRUE → unchecked (OFF)
+    toggleEl.checked = !data.value;
+  } catch (err) {
+    console.error("Failed to fetch initial state:", err);
+  }
 }
 
 // Toggle function
 async function toggle() {
   toggleEl.disabled = true;
-  const res = await fetch(`${API}?action=toggle`);
-  const data = await res.json();
-  toggleEl.checked = !data.value; // maintain reversed logic
-  toggleEl.disabled = false;
+  try {
+    const res = await fetch(`${API}?action=toggle`);
+    const data = await res.json();
+    toggleEl.checked = !data.value; // maintain reversed logic
+  } catch (err) {
+    console.error("Failed to toggle state:", err);
+  } finally {
+    toggleEl.disabled = false;
+  }
 }
 
 // Event listener
